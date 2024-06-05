@@ -1,1 +1,38 @@
+import subprocess
+import os
 
+def run_fastqc(data_directory, output_directory, fastqc_dir):
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
+
+    fastq_files = [f for f in os.listdir(data_directory) if f.endswith('.fastq') or f.endswith('.fastq.gz')]
+    fastq_files.sort() 
+
+    java_path = 'java'
+
+    classpath = os.pathsep.join([
+        os.path.join(fastqc_dir, 'sam-1.103.jar'),
+        os.path.join(fastqc_dir, 'jbzip2-0.9.jar'),
+        os.path.join(fastqc_dir, '.')
+    ])
+#for batch processing, mutiple sequences
+ for i in range(0, len(fastq_files), 2):  
+        file1 = os.path.join(data_directory, fastq_files[i])
+        file2 = os.path.join(data_directory, fastq_files[i+1])
+        command = [
+            java_path,
+            '-Xmx250m',
+            '-classpath', classpath,
+            'uk.ac.babraham.FastQC.FastQCApplication',
+            '-o', output_directory,
+            file1, file2
+        ]
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        print(result.stdout.decode('utf-8'))
+        print(result.stderr.decode('utf-8'))
+        print(f"Processed: {file1} and {file2}")
+data_directory = r""  #Update with Data directory
+output_directory = r""  #Update with Output directory
+fastqc_dir = r''  #Update with FastQC application Location
+
+run_fastqc(data_directory, output_directory, fastqc_dir)
