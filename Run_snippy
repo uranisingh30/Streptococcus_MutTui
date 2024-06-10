@@ -21,7 +21,7 @@ nano run_snippy.sh
     SNIPPY_SAMPLE_RESULTS="$SNIPPY_RESULTS_DIR/$SAMPLE_ID"
     
     #output directory
-    mkdir -p "$SNIPPY_SAMPLE_RESULTS"
+    mkdir -p "$SNIPPY_RESULTS"
     
     #BWA MEM, Samclip, and Samtools pipeline
     bwa mem -Y -M -R "@RG\tID:$SAMPLE_ID\tSM:$SAMPLE_ID" -t 4 "$REFERENCE_FASTA" "$R1" "$R2" | \
