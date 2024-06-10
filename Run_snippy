@@ -1,1 +1,46 @@
+conda install -c bioconda snippy
+
+
+nano run_snippy.sh
+    #file paths
+    PROJECT_DIR="/mnt/c/Users/...."
+    REFERENCE_DIR="$PROJECT_DIR/Reference"
+    TRIM_RESULTS_DIR="$PROJECT_DIR/Trimmomatic_Results"
+    SNIPPY_RESULTS_DIR="$PROJECT_DIR/Snippy_Results"
+    REFERENCE_FASTA="$REFERENCE_DIR/GPSC24_reference.fasta"
+
+    samtools faidx "$REFERENCE_FASTA"
+    bwa index "$REFERENCE_FASTA"
+
+    ln -sf "$REFERENCE_FASTA" "$PROJECT_DIR/reference.fa"
+    ln -sf "$REFERENCE_FASTA.fai" "$PROJECT_DIR/reference.fa.fai"
+
+    for R1 in "$TRIM_RESULTS_DIR"/*_1_paired.fastq; do
+    SAMPLE_ID=$(basename "$R1" | cut -d'_' -f1)
+    R2="$TRIM_RESULTS_DIR/${SAMPLE_ID}_2_paired.fastq"
+    SNIPPY_SAMPLE_RESULTS="$SNIPPY_RESULTS_DIR/$SAMPLE_ID"
+    
+    #output directory
+    mkdir -p "$SNIPPY_SAMPLE_RESULTS"
+    
+    #BWA MEM, Samclip, and Samtools pipeline
+    bwa mem -Y -M -R "@RG\tID:$SAMPLE_ID\tSM:$SAMPLE_ID" -t 4 "$REFERENCE_FASTA" "$R1" "$R2" | \
+        samclip --max 10 --ref "$REFERENCE_FASTA.fai" | \
+        samtools sort -n -l 0 -T /tmp --threads 1 -m 4000M | \
+        samtools fixmate -m --threads 1 - - | \
+        samtools sort -l 0 -T /tmp --threads 1 -m 4000M | \
+        samtools markdup -T /tmp --threads 1 -r -s - - > "$SNIPPY_SAMPLE_RESULTS/snps.bam" 2>> "$SNIPPY_SAMPLE_RESULTS/snps.log"
+    
+    #snps.bam file creation check
+    if [ -f "$SNIPPY_SAMPLE_RESULTS/snps.bam" ]; then
+        echo "snps.bam file successfully created for sample $SAMPLE_ID in $SNIPPY_SAMPLE_RESULTS"
+    else
+        echo "Failed to create snps.bam file for sample $SAMPLE_ID. Check the log file $SNIPPY_SAMPLE_RESULTS/snps.log for details."
+    fi
+  done
+
+  echo "All samples processed."
+
+chmod +x run_snippy.sh
+./run_snipy.sh
 
