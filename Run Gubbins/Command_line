@@ -15,9 +15,9 @@ nano fasta.sh
   #!/bin/bash
 
   # Defining directories
-  BASE_DIR="/mnt/c/Users/Uma/OneDrive/Desktop/Project 2/Snippy_Results"
+  BASE_DIR="/mnt/source directory"
   OUTPUT_DIR="${BASE_DIR}/FASTA"
-  REFERENCE="/mnt/c/Users/Uma/OneDrive/Desktop/Project 2/Reference/GPSC24_reference.fasta"
+  REFERENCE="/mnt/reference directory.../Reference/GPSC24_reference.fasta"
 
   # Creating output directory if it does not exist
   if [ ! -d "${OUTPUT_DIR}" ]; then
