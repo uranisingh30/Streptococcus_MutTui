@@ -50,3 +50,5 @@ nano fasta.sh
     done
     echo "Combined FASTA created at ${FASTA}"
 
+chmod +x fasta.sh
+./fasta.sh
