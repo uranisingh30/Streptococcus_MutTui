@@ -1,1 +1,52 @@
+# Update conda
+conda update conda
+
+# Creating a conda environment
+conda create -n gubbins_env python=3.8
+
+# Activating the environment
+conda activate gubbins_env
+
+# Installing Gubbins, vcflib, and any other necessary tools
+conda install -c bioconda gubbins vcflib bcftools
+
+#script for coverting vcf files to fasta and combined alignment
+nano fasta.sh
+  #!/bin/bash
+
+  # Defining directories
+  BASE_DIR="/mnt/c/Users/Uma/OneDrive/Desktop/Project 2/Snippy_Results"
+  OUTPUT_DIR="${BASE_DIR}/FASTA"
+  REFERENCE="/mnt/c/Users/Uma/OneDrive/Desktop/Project 2/Reference/GPSC24_reference.fasta"
+
+  # Creating output directory if it does not exist
+  if [ ! -d "${OUTPUT_DIR}" ]; then
+    mkdir -p ${OUTPUT_DIR}
+    echo "Created directory: ${OUTPUT_DIR}"
+  fi
+
+  FASTA="${OUTPUT_DIR}/combined_alignment.fasta"
+  > ${FASTA}
+
+  # Looping through each subdirectory and convert VCF to FASTA
+  for DIR in "${BASE_DIR}"/*; do
+      if [ -d "${DIR}" ]; then
+        VCF_FILE="${DIR}/variants.vcf.gz"
+        PREFIX=$(basename "${DIR}")
+
+          if [ -f "${VCF_FILE}" ]; then
+            if [ "${VCF_FILE: -3}" == ".gz" ]; then
+                gunzip -c "${VCF_FILE}" > "${DIR}/variants.vcf"
+                VCF_FILE="${DIR}/variants.vcf"
+            fi
+
+              # Convert VCF to FASTA using bcftools
+              bcftools consensus -f "${REFERENCE}" "${VCF_FILE}" -o "${OUTPUT_DIR}/${PREFIX}.fasta"
+
+              # Append to combined FASTA
+            cat "${OUTPUT_DIR}/${PREFIX}.fasta" >> "${COMBINED_FASTA}"
+          fi
+        fi
+    done
+    echo "Combined FASTA created at ${FASTA}"
 
