@@ -44,7 +44,7 @@ nano fasta.sh
               bcftools consensus -f "${REFERENCE}" "${VCF_FILE}" -o "${OUTPUT_DIR}/${PREFIX}.fasta"
 
               # Append to combined FASTA
-            cat "${OUTPUT_DIR}/${PREFIX}.fasta" >> "${COMBINED_FASTA}"
+            cat "${OUTPUT_DIR}/${PREFIX}.fasta" >> "${FASTA}"
           fi
         fi
     done
