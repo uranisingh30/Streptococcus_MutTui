@@ -1,1 +1,24 @@
+#Mount your working directory 
+cd /mnt/c/Users/path of your directory
 
+# Create input.tab file
+declare -A sample_count
+> ../Snippy_Results/input.tab
+for file in *_1_paired.fastq; do
+    base_name=$(basename "$file" _1_paired.fastq)
+    sample_id="${base_name}"
+    if [[ -v "sample_count[$sample_id]" ]]; then
+        count=${sample_count[$sample_id]}
+        sample_id="${sample_id}_$count"
+        sample_count[$base_name]=$((count + 1))
+    else
+        sample_count[$base_name]=1
+    fi
+
+    echo -e "$sample_id\t$(pwd)/${base_name}_1_paired.fastq\t$(pwd)/${base_name}_2_paired.fastq" >> ../Snippy_Results/input.tab
+done
+
+#Generate .sh to run snippy multi
+cd /mnt/c/path where you wish to save your results
+snippy-multi input.tab --ref ../Reference/_reference.fasta --cpus 4 > runme.sh
+sh runme.sh #run snippy multi
