@@ -1,0 +1,4 @@
+#Activate gubbins envirnment to access run_gubbins.py
+Conda activate gubbins_env
+#After creating and cleaning alignment, use clean alignment to run gubbins
+run_gubbins.py --prefix final  final.aln
