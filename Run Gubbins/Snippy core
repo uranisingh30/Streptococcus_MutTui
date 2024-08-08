@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Reference genome
+REFERENCE="/mnt/c/Users/Uma/OneDrive/Desktop/Project_2/Reference/GPSC24_reference.fasta"
+
+# List of sample directories
+SAMPLES=(
+    "/mnt/c/Users/Uma/OneDrive/Desktop/Project_2/Snippy_Results/...."
+    mount all directries location
+)
+
+# Create Core SNP Alignment
+snippy-core --ref "$REFERENCE" --prefix "core" "${SAMPLES[@]}"
+
+# Clean Core Alignment
+snippy-clean_full_aln "core.full.aln" > "core.clean.full.aln"
+
+
+#save above script as .sh, make it executable (chmod +c .sh) and then run (./.sh)...
