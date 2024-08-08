@@ -20,5 +20,6 @@ done
 
 #Generate .sh to run snippy multi
 cd /mnt/c/path where you wish to save your results
-snippy-multi input.tab --ref ../Reference/_reference.fasta --cpus 4 > runme.sh
+snippy-multi input.tab --ref ../Reference/_reference.fasta --cpus 16 > runme.sh
 sh runme.sh #run snippy multi
+
